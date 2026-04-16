@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python main.py)",
+      "Bash(python main.py raw/1.json)",
+      "Bash(\"D:\\\\venvs\\\\easyrad\\\\Scripts\\\\python.exe\" main.py raw/1.json)",
+      "Bash(cmd *)",
+      "Bash(D:\\\\venvs\\\\easyrad\\\\Scripts\\\\pip.exe install *)",
+      "Bash(\"D:\\\\venvs\\\\easyrad\\\\Scripts\\\\python.exe\" test_medasr.py)",
+      "WebFetch(domain:developers.google.com)",
+      "Bash(del test_medasr.py)",
+      "Bash(powershell *)",
+      "Bash(npx create-next-app@14 frontend --typescript --app --no-tailwind --no-eslint --src-dir=false --import-alias=\"@/*\")",
+      "Bash(pip install *)"
+    ]
+  }
+}

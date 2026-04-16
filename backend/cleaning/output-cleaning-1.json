@@ -1,0 +1,33 @@
+{
+  "clinical_context": {
+    "patient_name": "Carlos Martinez",
+    "patient_id": "PAC-00123",
+    "age": 58,
+    "sex": "masculino",
+    "diagnoses": [
+      "diabetes tipo 2",
+      "hipertensión"
+    ],
+    "reason_for_referral": "tos seca y fiebre de tres dias de evolucion",
+    "SpO2": "92%",
+    "relevant_history": "tabaquismo 20 paquetes año"
+  },
+  "findings": {
+    "chest_xray": {
+      "lung_findings": [
+        "opacidad tipo vidrio esmerilado en lóbulo inferior derecho",
+        "distribución periférica y subpleural"
+      ],
+      "pleural_effusion": "no presente",
+      "mediastinal_adenopathy": "no significativa",
+      "cardiac_silhouette": "dentro de límites",
+      "bones": "sin cambios agudos"
+    }
+  },
+  "impression": null,
+  "validation_flags": [],
+  "followup_tasks": [],
+  "transaction_id": 1,
+  "radiologist_id": "dr_001",
+  "raw_transcription": "a ver... paciente Carlos Martinez identificacion PAC-00123... masculino 58 anos... diabetico tipo 2 hipertenso... viene remitido por el internista por tos seca y fiebre de tres dias de evolucion... SpO2 92%... antecedente de tabaquismo 20 paquetes ano... bueno la rx de torax... ehh se observa una opacidad tipo vidrio esmerilado en lobulo inferior derecho distribucion periferica y subpleural... no veo derrame pleural ni... ehh tampoco adenopatias mediastinicas significativas... la silueta cardiaca dentro de limites... los huesos sin cambios agudos"
+}

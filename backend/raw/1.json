@@ -1,0 +1,5 @@
+{
+  "transaction_id": 1,
+  "radiologist_id": "dr_001",
+  "audio_file": "pipeline/0-raw-audio/1.m4a"
+}

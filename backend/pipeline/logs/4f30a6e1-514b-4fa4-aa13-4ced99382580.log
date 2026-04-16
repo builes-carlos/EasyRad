@@ -1,0 +1,5 @@
+=== Pipeline TXN-4f30a6e1-514b-4fa4-aa13-4ced99382580 | 2026-04-16 15:08:01 ===
+[1] audio-transcription  2.3s
+[2] parsing              4.1s
+[3] enriched             4.3s
+--- total                10.6s

@@ -1,0 +1,39 @@
+=== Pipeline TXN-1 | 2026-04-16 12:15:24 ===
+[1] audio-transcription  97.6s
+[2] parsing              5.0s
+[3] enriched             4.1s
+--- total                106.7s
+=== Pipeline TXN-1 | 2026-04-16 12:22:23 ===
+[1] audio-transcription  3.7s
+[2] parsing              4.0s
+[3] enriched             5.0s
+--- total                12.7s
+=== Pipeline TXN-1 | 2026-04-16 14:03:52 ===
+[1] audio-transcription  7.6s
+[2] parsing              4.5s
+=== Pipeline TXN-1 | 2026-04-16 14:05:08 ===
+[1] audio-transcription  3.2s
+[2] parsing              3.1s
+=== Pipeline TXN-1 | 2026-04-16 14:05:47 ===
+[1] audio-transcription  3.0s
+[2] parsing              3.9s
+=== Pipeline TXN-1 | 2026-04-16 14:06:20 ===
+[1] audio-transcription  3.7s
+[2] parsing              3.1s
+[3] enriched             4.6s
+--- total                11.5s
+=== Pipeline TXN-1 | 2026-04-16 14:13:05 ===
+[1] audio-transcription  2.9s
+[2] parsing              3.6s
+[3] enriched             4.8s
+--- total                11.3s
+=== Pipeline TXN-1 | 2026-04-16 14:17:49 ===
+[1] audio-transcription  2.2s
+[2] parsing              4.3s
+[3] enriched             3.8s
+--- total                10.3s
+=== Pipeline TXN-1 | 2026-04-16 14:29:07 ===
+[1] audio-transcription  1.9s
+[2] parsing              2.6s
+[3] enriched             3.0s
+--- total                7.5s

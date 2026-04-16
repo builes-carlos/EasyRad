@@ -1,0 +1,6 @@
+{
+  "INMEDIATA": "Hallazgo que amenaza la vida en horas. Requiere contacto directo con el médico tratante.",
+  "URGENTE": "Requiere atención el mismo día.",
+  "PREFERENTE": "Requiere atención en días o esta semana.",
+  "RUTINA": "Seguimiento programado. Hallazgo estable o variante normal."
+}

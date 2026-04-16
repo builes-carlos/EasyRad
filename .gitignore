@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+
+# outputs generados por el pipeline (debug)
+backend/pipeline/1-audio-transcription/
+backend/pipeline/2-parsing/
+backend/pipeline/3-enriched/
+
+# input de audio — se commitea la carpeta, no los archivos
+backend/pipeline/0-raw-audio/*
+!backend/pipeline/0-raw-audio/.gitkeep
