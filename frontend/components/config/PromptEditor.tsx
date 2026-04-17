@@ -33,7 +33,7 @@ export default function PromptEditor() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <h2 style={{ margin: 0, color: '#fff' }}>Prompt principal de Jorge</h2>
+        <h2 style={{ margin: 0, fontSize: 18, color: '#fff' }}>Prompt principal de Jorge</h2>
         <button
           onClick={handleSave}
           disabled={saving}
