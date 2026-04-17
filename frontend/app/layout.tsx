@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "DictIA",
+  title: "Medicta",
   description: "Pipeline de reportes radiológicos",
 };
 
