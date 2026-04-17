@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "EasyRAD",
+  title: "DictIA",
   description: "Pipeline de reportes radiológicos",
 };
 

@@ -11,6 +11,29 @@ export default function ConfigPage() {
 
   return (
     <div>
+      {/* Especialidad — sección superior */}
+      <div style={{ marginBottom: 32 }}>
+        <label style={{ fontSize: 13, color: '#888', textTransform: 'uppercase', letterSpacing: 1, display: 'block', marginBottom: 8 }}>
+          Especialidad
+        </label>
+        <select
+          defaultValue="Radiología"
+          style={{
+            padding: '8px 16px',
+            border: '1px solid #bee3f8',
+            borderRadius: 8,
+            background: '#ebf4ff',
+            color: '#2b6cb0',
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: 'pointer',
+          }}
+        >
+          <option>Radiología</option>
+        </select>
+      </div>
+
+      {/* Sub-tabs */}
       <div style={{ display: 'flex', gap: 0, borderBottom: '2px solid #e2e8f0', marginBottom: 32 }}>
         {SUB_TABS.map((tab) => (
           <button
