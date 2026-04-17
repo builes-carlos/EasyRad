@@ -2,11 +2,20 @@ import json
 import os
 import time
 from datetime import datetime
+from pathlib import Path
 
 from functions import audio, parsing, enrichment
 
 _DEBUG = os.getenv("DEBUG_OUTPUT", "false").lower() == "true"
 _LOG_DIR = "pipeline/logs"
+_BASE = Path(__file__).parent.parent
+
+
+def _load_profile(domain: str, user_id: str) -> dict:
+    profile_path = _BASE / "users" / domain / user_id / "profile.json"
+    if not profile_path.exists():
+        raise ValueError(f"Usuario no encontrado: {domain}/{user_id}")
+    return json.loads(profile_path.read_text(encoding="utf-8"))
 
 
 def _save(order: str, stage: str, report: dict):
@@ -27,6 +36,12 @@ def _log(log_path: str, message: str):
 
 def run_pipeline(report: dict) -> dict:
     txn_id = report["raw"]["transaction_id"]
+    domain = report["raw"]["domain"]
+    user_id = report["raw"]["user_id"]
+
+    profile = _load_profile(domain, user_id)
+    specialty = profile["specialty"]
+    report["raw"]["specialty"] = specialty
 
     if _DEBUG:
         os.makedirs(_LOG_DIR, exist_ok=True)
@@ -41,12 +56,12 @@ def run_pipeline(report: dict) -> dict:
     _save("1", "audio-transcription", report)
 
     t0 = time.time()
-    report = parsing.run(report)
+    report = parsing.run(report, domain, specialty)
     _log(log_path, f"[2] parsing              {time.time() - t0:.1f}s")
     _save("2", "parsing", report)
 
     t0 = time.time()
-    report = enrichment.run(report)
+    report = enrichment.run(report, domain, user_id)
     _log(log_path, f"[3] enriched             {time.time() - t0:.1f}s")
     _save("3", "enriched", report)
 

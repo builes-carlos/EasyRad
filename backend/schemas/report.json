@@ -1,27 +1,15 @@
 {
   "raw": {
     "transaction_id": null,
-    "radiologist_id": null,
+    "domain": null,
+    "user_id": null,
+    "specialty": null,
     "audio_file": null,
     "raw_transcription": null
   },
   "parsing": {
-    "patient_info": {
-      "patient_name": "",
-      "patient_id": "",
-      "age": "",
-      "sex": "",
-      "referring_physician": "",
-      "referring_specialty": ""
-    },
-    "clinical_data": {
-      "diagnoses": [],
-      "reason_for_referral": "",
-      "relevant_history": "",
-      "additional": {}
-    },
     "study_type": "",
-    "findings": ""
+    "normalized_text": ""
   },
   "enrichment": {
     "report": "",

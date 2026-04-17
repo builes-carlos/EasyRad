@@ -1507,7 +1507,7 @@ Sin hallazgos patológicos.
 
 Opinión:
 Tomografía de cadera sin hallazgos óseos significativos.
-Nota: La TC permite una valoración precisa de la arquitectura ósea.
+,: La TC permite una valoración precisa de la arquitectura ósea.
 Sin embargo, la evaluación de tendones, ligamentos y cartílagos se realiza mejor con resonancia magnética.
 <<<END>>>
 

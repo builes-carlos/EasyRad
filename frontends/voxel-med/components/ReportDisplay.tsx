@@ -28,7 +28,7 @@ export default function ReportDisplay({ report }: Props) {
           color: '#000',
         }}
       >
-        {report.raw.raw_transcription}
+        <strong>{report.parsing.study_type}</strong>{'\n\n'}{report.parsing.normalized_text}
       </pre>
       <h2 style={{ marginTop: 32 }}>Reporte enriquecido</h2>
       <div

@@ -10,3 +10,17 @@ backend/pipeline/3-enriched/
 # input de audio — se commitea la carpeta, no los archivos
 backend/pipeline/0-raw-audio/*
 !backend/pipeline/0-raw-audio/.gitkeep
+
+# logs de ejecución
+backend/pipeline/logs/
+
+# datos reales de pacientes y casos de prueba (NO subir)
+backend/raw/*.json
+backend/pipeline/refinamiento*.txt
+
+# node_modules
+node_modules/
+frontends/voxel-med/node_modules/
+
+# Next.js build
+frontends/voxel-med/.next/

@@ -13,15 +13,20 @@ from dotenv import load_dotenv
 # Fijar cwd = backend/ ANTES de importar el pipeline (usa rutas relativas)
 _BASE = Path(__file__).parent
 os.chdir(_BASE)
-load_dotenv()  # encuentra .env en la raíz del proyecto (un nivel arriba)
+load_dotenv()
 
 from pipeline.orchestrator import run_pipeline
 
 _SCHEMA = json.loads((_BASE / "schemas" / "report.json").read_text(encoding="utf-8"))
 _AUDIO_DIR = _BASE / "pipeline" / "0-raw-audio"
 _AUDIO_DIR.mkdir(parents=True, exist_ok=True)
-_TEMPLATES_PATH = _BASE / "prompts" / "templates.json"
-_RULES_PATH = _BASE / "prompts" / "rules.txt"
+
+# Dominio/especialidad usados por los endpoints de admin (medical por defecto)
+_ADMIN_DOMAIN = "medical"
+_ADMIN_SPECIALTY = "radiology"
+_TEMPLATES_PATH = _BASE / "domains" / _ADMIN_DOMAIN / _ADMIN_SPECIALTY / "templates.json"
+_RULES_PATH = _BASE / "domains" / _ADMIN_DOMAIN / _ADMIN_SPECIALTY / "rules.txt"
+_USERS_DIR = _BASE / "users"
 
 
 def _load_templates() -> dict:
@@ -43,6 +48,7 @@ class TemplateBody(BaseModel):
 class PromptBody(BaseModel):
     content: str
 
+
 app = FastAPI(title="EasyRAD API")
 _cors_origins = os.getenv("CORS_ORIGINS", "*").split(",")
 app.add_middleware(
@@ -61,7 +67,8 @@ def health():
 @app.post("/process")
 def process_report(
     audio: UploadFile = File(...),
-    radiologist_id: str = Form(default="dr_web"),
+    user_id: str = Form(default="dr_jorge"),
+    domain: str = Form(default="medical"),
 ):
     transaction_id = str(uuid.uuid4())
     suffix = Path(audio.filename or "audio.webm").suffix or ".webm"
@@ -73,7 +80,8 @@ def process_report(
     report["raw"] = {
         **_SCHEMA["raw"],
         "transaction_id": transaction_id,
-        "radiologist_id": radiologist_id,
+        "domain": domain,
+        "user_id": user_id,
         "audio_file": f"pipeline/0-raw-audio/{audio_filename}",
     }
 
@@ -127,6 +135,30 @@ def delete_template(name: str):
         raise HTTPException(status_code=404, detail="Plantilla no encontrada")
     del templates[name]
     _save_templates(templates)
+    return {"ok": True}
+
+
+@app.get("/user/{domain}/{user_id}")
+def get_user(domain: str, user_id: str):
+    profile_path = _USERS_DIR / domain / user_id / "profile.json"
+    if not profile_path.exists():
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    style_path = _USERS_DIR / domain / user_id / "style.txt"
+    style = style_path.read_text(encoding="utf-8") if style_path.exists() else ""
+    return {"id": user_id, "domain": domain, **profile, "style": style}
+
+
+class StyleBody(BaseModel):
+    style: str
+
+
+@app.put("/user/{domain}/{user_id}/style")
+def update_style(domain: str, user_id: str, body: StyleBody):
+    style_path = _USERS_DIR / domain / user_id / "style.txt"
+    if not style_path.parent.exists():
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    style_path.write_text(body.style, encoding="utf-8")
     return {"ok": True}
 
 

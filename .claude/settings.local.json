@@ -13,7 +13,16 @@
       "Bash(npx create-next-app@14 frontend --typescript --app --no-tailwind --no-eslint --src-dir=false --import-alias=\"@/*\")",
       "Bash(pip install *)",
       "Bash(python scripts/parse_super_prompt.py)",
-      "Bash(python -c *)"
+      "Bash(python -c *)",
+      "Bash(python main.py raw/carlos.json)",
+      "Bash(python main.py raw/case1.json)",
+      "Bash(python main.py raw/case2.json)",
+      "Bash(python main.py raw/case3.json)",
+      "Bash(mkdir -p frontends/voxel-med)",
+      "Bash(cp -r frontend/app frontend/components frontend/public frontend/package.json frontend/package-lock.json frontend/tsconfig.json frontend/next.config.* frontend/.env.local frontend/.gitignore frontend/railway.toml frontend/globals.css frontends/voxel-med/)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(rm -rf backend/doctors/ backend/specialties/)",
+      "Bash(cmd /c \"rd /s /q frontend\")"
     ]
   }
 }

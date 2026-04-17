@@ -1,13 +1,12 @@
 import json
 import copy
+import re
 from pathlib import Path
 from llm.client import get_enrichment_completion
 
 _BASE = Path(__file__).parent.parent
 _ENRICHMENT_SCHEMA = json.loads((_BASE / "schemas" / "report.json").read_text(encoding="utf-8"))["enrichment"]
 _URGENCY_LEVELS = json.loads((_BASE / "config" / "urgency_levels.json").read_text(encoding="utf-8"))
-_RULES = (_BASE / "prompts" / "rules.txt").read_text(encoding="utf-8")
-_TEMPLATES = json.loads((_BASE / "prompts" / "templates.json").read_text(encoding="utf-8"))
 
 _urgency_options = "\n".join(f'  - "{k}": {v}' for k, v in _URGENCY_LEVELS.items())
 
@@ -40,9 +39,21 @@ def _template_to_text(t: dict) -> str:
     return "\n\n".join(parts)
 
 
-def run(report: dict) -> dict:
+def run(report: dict, domain: str, user_id: str) -> dict:
+    profile_path = _BASE / "users" / domain / user_id / "profile.json"
+    if not profile_path.exists():
+        raise ValueError(f"Usuario no encontrado: {domain}/{user_id}")
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    specialty = profile["specialty"]
+
+    rules = (_BASE / "domains" / domain / specialty / "rules.txt").read_text(encoding="utf-8")
+    templates = json.loads((_BASE / "domains" / domain / specialty / "templates.json").read_text(encoding="utf-8"))
+
+    style_path = _BASE / "users" / domain / user_id / "style.txt"
+    style = style_path.read_text(encoding="utf-8").strip() if style_path.exists() else ""
+
     study_type = report["parsing"].get("study_type", "")
-    raw_template = _TEMPLATES.get(study_type)
+    raw_template = templates.get(study_type)
     template = _template_to_text(raw_template) if raw_template else None
 
     preamble = (
@@ -51,22 +62,20 @@ def run(report: dict) -> dict:
         "Genera el reporte INMEDIATAMENTE sin confirmar ni esperar más instrucciones.\n\n"
     )
 
+    style_section = f"\n\n---\nESTILO DEL MÉDICO:\n{style}\n---" if style else ""
+
     if template:
         print(f'[ENRICHED]    Plantilla: "{study_type}"')
         prompt_body = (
-            f"{preamble}{_RULES}\n\n"
+            f"{preamble}{rules}{style_section}\n\n"
             f"---\nPLANTILLA A USAR:\n{template}\n---\n\n"
-            f"Datos del paciente:\n{json.dumps(report['parsing']['patient_info'], ensure_ascii=False)}\n\n"
-            f"Datos clínicos:\n{json.dumps(report['parsing']['clinical_data'], ensure_ascii=False)}\n\n"
-            f"Hallazgos dictados:\n{report['parsing']['findings']}"
+            f"Dictado normalizado:\n{report['parsing']['normalized_text']}"
         )
     else:
         print(f'[ENRICHED]    Sin plantilla para "{study_type}" — usando reglas base')
         prompt_body = (
-            f"{preamble}{_RULES}\n\n"
-            f"Datos del paciente:\n{json.dumps(report['parsing']['patient_info'], ensure_ascii=False)}\n\n"
-            f"Datos clínicos:\n{json.dumps(report['parsing']['clinical_data'], ensure_ascii=False)}\n\n"
-            f"Hallazgos dictados:\n{report['parsing']['findings']}"
+            f"{preamble}{rules}{style_section}\n\n"
+            f"Dictado normalizado:\n{report['parsing']['normalized_text']}"
         )
 
     schema = copy.deepcopy(_ENRICHMENT_SCHEMA)
@@ -75,7 +84,6 @@ def run(report: dict) -> dict:
     )
 
     raw = get_enrichment_completion(full_prompt).strip()
-    # Extraer JSON aunque haya texto previo (ej: "Cargado y listo.\n\n```json\n{...}")
     if "```" in raw:
         raw = raw.split("```", 1)[1]
         if raw.startswith("json"):
@@ -83,6 +91,7 @@ def run(report: dict) -> dict:
         raw = raw.rsplit("```", 1)[0].strip()
     elif "{" in raw:
         raw = raw[raw.index("{"):]
+    raw = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', raw)
     parsed = json.loads(raw)
 
     report["enrichment"]["report"] = parsed["report"]

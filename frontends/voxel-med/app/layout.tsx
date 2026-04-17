@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Nav from "@/components/Nav";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -15,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Dictor",
-  description: "Pipeline de reportes radiológicos",
+  title: "Voxel-Med",
+  description: "Enriquecimiento de reportes médicos por voz",
 };
 
 export default function RootLayout({
@@ -27,10 +26,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Nav />
-        <main style={{ maxWidth: 900, margin: "0 auto", padding: "32px 20px" }}>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
