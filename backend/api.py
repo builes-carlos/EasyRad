@@ -3,9 +3,11 @@ import json
 import os
 import uuid
 from pathlib import Path
+from typing import Optional
 
 from fastapi import FastAPI, File, Form, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from dotenv import load_dotenv
 
 # Fijar cwd = backend/ ANTES de importar el pipeline (usa rutas relativas)
@@ -18,6 +20,28 @@ from pipeline.orchestrator import run_pipeline
 _SCHEMA = json.loads((_BASE / "schemas" / "report.json").read_text(encoding="utf-8"))
 _AUDIO_DIR = _BASE / "pipeline" / "0-raw-audio"
 _AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+_TEMPLATES_PATH = _BASE / "prompts" / "templates.json"
+_RULES_PATH = _BASE / "prompts" / "rules.txt"
+
+
+def _load_templates() -> dict:
+    return json.loads(_TEMPLATES_PATH.read_text(encoding="utf-8"))
+
+
+def _save_templates(templates: dict):
+    _TEMPLATES_PATH.write_text(json.dumps(templates, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+class TemplateBody(BaseModel):
+    indicacion: Optional[str] = None
+    tecnica: Optional[str] = None
+    hallazgos: Optional[str] = None
+    opinion: Optional[str] = None
+    nota: Optional[str] = None
+
+
+class PromptBody(BaseModel):
+    content: str
 
 app = FastAPI(title="EasyRAD API")
 _cors_origins = os.getenv("CORS_ORIGINS", "*").split(",")
@@ -57,6 +81,64 @@ def process_report(
         return run_pipeline(report)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/templates")
+def list_templates():
+    return list(_load_templates().keys())
+
+
+@app.get("/templates/{name}")
+def get_template(name: str):
+    templates = _load_templates()
+    if name not in templates:
+        raise HTTPException(status_code=404, detail="Plantilla no encontrada")
+    return {"name": name, **templates[name]}
+
+
+@app.put("/templates/{name}")
+def update_template(name: str, body: TemplateBody):
+    templates = _load_templates()
+    if name not in templates:
+        raise HTTPException(status_code=404, detail="Plantilla no encontrada")
+    templates[name] = body.model_dump()
+    _save_templates(templates)
+    return {"ok": True}
+
+
+class NewTemplateBody(TemplateBody):
+    name: str
+
+
+@app.post("/templates")
+def create_template(body: NewTemplateBody):
+    templates = _load_templates()
+    if body.name in templates:
+        raise HTTPException(status_code=409, detail="Ya existe una plantilla con ese nombre")
+    templates[body.name] = body.model_dump(exclude={"name"})
+    _save_templates(templates)
+    return {"ok": True, "name": body.name}
+
+
+@app.delete("/templates/{name}")
+def delete_template(name: str):
+    templates = _load_templates()
+    if name not in templates:
+        raise HTTPException(status_code=404, detail="Plantilla no encontrada")
+    del templates[name]
+    _save_templates(templates)
+    return {"ok": True}
+
+
+@app.get("/prompt")
+def get_prompt():
+    return {"content": _RULES_PATH.read_text(encoding="utf-8")}
+
+
+@app.put("/prompt")
+def update_prompt(body: PromptBody):
+    _RULES_PATH.write_text(body.content, encoding="utf-8")
+    return {"ok": True}
 
 
 if __name__ == "__main__":

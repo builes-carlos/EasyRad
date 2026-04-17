@@ -7,7 +7,7 @@ _ffmpeg_path = os.getenv("FFMPEG_PATH")
 if _ffmpeg_path:
     os.environ["PATH"] = _ffmpeg_path + os.pathsep + os.environ.get("PATH", "")
 
-_PROVIDER = os.getenv("TRANSCRIPTION_PROVIDER", "local")
+_PROVIDER = os.getenv("TRANSCRIPTION_PROVIDER", "groq")
 _MODEL = os.getenv("TRANSCRIPTION_MODEL", "small")
 _LANGUAGE = os.getenv("TRANSCRIPTION_LANGUAGE", "es")
 

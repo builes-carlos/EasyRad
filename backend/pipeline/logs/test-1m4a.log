@@ -1,0 +1,6 @@
+=== Pipeline TXN-test-1m4a | 2026-04-16 18:52:10 ===
+=== Pipeline TXN-test-1m4a | 2026-04-16 18:52:21 ===
+[1] audio-transcription  2.9s
+[2] parsing              3.0s
+[3] enriched             3.5s
+--- total                9.5s

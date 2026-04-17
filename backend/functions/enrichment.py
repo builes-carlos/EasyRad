@@ -28,9 +28,22 @@ Responde ÚNICAMENTE con este JSON (sin bloques de código):
 {{schema}}"""
 
 
+def _template_to_text(t: dict) -> str:
+    parts = [
+        f"Indicación: {t['indicacion']}",
+        f"Técnica:\n{t['tecnica']}",
+        f"Hallazgos:\n{t['hallazgos']}",
+        f"Opinión:\n{t['opinion']}",
+    ]
+    if t.get("nota"):
+        parts.append(f"Nota:\n{t['nota']}")
+    return "\n\n".join(parts)
+
+
 def run(report: dict) -> dict:
     study_type = report["parsing"].get("study_type", "")
-    template = _TEMPLATES.get(study_type)
+    raw_template = _TEMPLATES.get(study_type)
+    template = _template_to_text(raw_template) if raw_template else None
 
     preamble = (
         "INSTRUCCIÓN DE SISTEMA: Eres un sistema de generación de reportes radiológicos. "

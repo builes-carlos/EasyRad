@@ -9,12 +9,14 @@ export default function Home() {
   const [sent, setSent] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isRecording, setIsRecording] = useState(false)
 
   function handleRecordingComplete(blob: Blob) {
     setAudioBlob(blob)
     setSent(false)
     setResult(null)
     setError(null)
+    setIsRecording(false)
   }
 
   async function handleSend() {
@@ -41,31 +43,33 @@ export default function Home() {
   }
 
   return (
-    <main style={{ maxWidth: 700, margin: '60px auto', fontFamily: 'sans-serif', padding: '0 20px' }}>
-      <h1>EasyRAD</h1>
-      <Recorder onRecordingComplete={handleRecordingComplete} />
-      <button
-        onClick={handleSend}
-        disabled={!audioBlob || loading || sent}
-        style={{
-          display: 'block',
-          marginTop: 16,
-          padding: '10px 24px',
-          fontSize: 16,
-          cursor: audioBlob && !loading && !sent ? 'pointer' : 'not-allowed',
-          background: audioBlob && !loading && !sent ? '#2b6cb0' : '#cbd5e0',
-          color: '#000',
-          border: 'none',
-          borderRadius: 6,
-        }}
-      >
-        {loading ? 'Procesando…' : 'Enviar'}
-      </button>
-      {audioBlob && !loading && !result && (
-        <p style={{ color: '#666', marginTop: 8 }}>Audio listo — presiona Enviar para procesar.</p>
+    <div>
+      <Recorder
+        onRecordingComplete={handleRecordingComplete}
+        onRecordingStart={() => { setIsRecording(true); setAudioBlob(null); setSent(false); setResult(null) }}
+      />
+      {audioBlob && !isRecording && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+          <button
+            onClick={handleSend}
+            disabled={loading || sent}
+            style={{
+              padding: '10px 32px',
+              fontSize: 16,
+              cursor: loading || sent ? 'not-allowed' : 'pointer',
+              background: loading || sent ? '#cbd5e0' : '#2b6cb0',
+              color: loading || sent ? '#000' : '#fff',
+              border: 'none',
+              borderRadius: 6,
+              fontWeight: 600,
+            }}
+          >
+            {loading ? 'Procesando…' : sent ? 'Enviado ✓' : 'Enviar'}
+          </button>
+        </div>
       )}
       {error && <p style={{ color: 'red', marginTop: 16 }}>{error}</p>}
       {result && <ReportDisplay report={result} />}
-    </main>
+    </div>
   )
 }

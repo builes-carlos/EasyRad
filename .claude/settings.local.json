@@ -11,7 +11,9 @@
       "Bash(del test_medasr.py)",
       "Bash(powershell *)",
       "Bash(npx create-next-app@14 frontend --typescript --app --no-tailwind --no-eslint --src-dir=false --import-alias=\"@/*\")",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(python scripts/parse_super_prompt.py)",
+      "Bash(python -c *)"
     ]
   }
 }
