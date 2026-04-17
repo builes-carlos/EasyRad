@@ -68,7 +68,13 @@ export default function Home() {
           </button>
         </div>
       )}
-      {error && <p style={{ color: 'red', marginTop: 16 }}>{error}</p>}
+      {error && (
+        <p style={{ color: 'red', marginTop: 16, textAlign: 'center' }}>
+          {error.includes('Expecting value') || error.includes('JSONDecodeError')
+            ? 'El dictado es muy corto o no contiene información clínica suficiente. Intenta de nuevo con un dictado más completo.'
+            : error}
+        </p>
+      )}
       {result && <ReportDisplay report={result} />}
     </div>
   )
